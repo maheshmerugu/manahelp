@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres'
-import { getUserFromReq, isAdmin } from '../../lib/auth.js'
+import { getUserFromReq, isAdmin, apiError } from '../../lib/auth.js'
 
 export default async function handler(req, res) {
   const user = await getUserFromReq(req)
@@ -46,6 +46,6 @@ export default async function handler(req, res) {
   } catch (e) {
     if (e.code === '23505')
       return res.status(409).json({ ok: false, error: 'A service with that name already exists.' })
-    return res.status(500).json({ ok: false, error: e.message })
+    return res.status(500).json({ ok: false, error: apiError(e) })
   }
 }

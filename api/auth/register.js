@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres'
-import { hashPassword, signToken, publicUser, isEmail, isAdminEmail, notify } from '../../lib/auth.js'
+import { hashPassword, signToken, publicUser, isEmail, isAdminEmail, notify, apiError } from '../../lib/auth.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'Method not allowed' })
@@ -58,6 +58,6 @@ export default async function handler(req, res) {
   } catch (e) {
     if (e.code === '23505')
       return res.status(409).json({ ok: false, error: 'An account with this email already exists.' })
-    return res.status(500).json({ ok: false, error: e.message })
+    return res.status(500).json({ ok: false, error: apiError(e) })
   }
 }

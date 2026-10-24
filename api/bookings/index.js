@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres'
-import { getUserFromReq } from '../../lib/auth.js'
+import { getUserFromReq, apiError } from '../../lib/auth.js'
 
 export default async function handler(req, res) {
   const user = await getUserFromReq(req)
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
         ORDER BY b.created_at DESC LIMIT 200`
       return res.status(200).json({ ok: true, bookings: rows })
     } catch (e) {
-      return res.status(500).json({ ok: false, error: e.message })
+      return res.status(500).json({ ok: false, error: apiError(e) })
     }
   }
 
@@ -66,7 +66,7 @@ export default async function handler(req, res) {
 
       return res.status(201).json({ ok: true, booking })
     } catch (e) {
-      return res.status(500).json({ ok: false, error: e.message })
+      return res.status(500).json({ ok: false, error: apiError(e) })
     }
   }
 

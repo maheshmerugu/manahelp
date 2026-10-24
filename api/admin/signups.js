@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres'
-import { getUserFromReq, isAdmin } from '../../lib/auth.js'
+import { getUserFromReq, isAdmin, apiError } from '../../lib/auth.js'
 
 // GET /api/admin/signups — marketing leads captured by the landing-page form.
 export default async function handler(req, res) {
@@ -17,6 +17,6 @@ export default async function handler(req, res) {
     ])
     return res.status(200).json({ ok: true, signups, total: totals[0].total })
   } catch (e) {
-    return res.status(500).json({ ok: false, error: e.message })
+    return res.status(500).json({ ok: false, error: apiError(e) })
   }
 }

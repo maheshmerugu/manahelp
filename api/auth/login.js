@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres'
-import { verifyPassword, signToken, publicUser, ensureAdminRole } from '../../lib/auth.js'
+import { verifyPassword, signToken, publicUser, ensureAdminRole, apiError } from '../../lib/auth.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'Method not allowed' })
@@ -19,6 +19,6 @@ export default async function handler(req, res) {
     const user = await ensureAdminRole(found)
     return res.status(200).json({ ok: true, token: signToken(user), user: publicUser(user) })
   } catch (e) {
-    return res.status(500).json({ ok: false, error: e.message })
+    return res.status(500).json({ ok: false, error: apiError(e) })
   }
 }

@@ -1,4 +1,5 @@
 import { sql } from '@vercel/postgres'
+import { apiError } from '../lib/auth.js'
 
 // Normalize an Indian mobile number to 10 digits. Returns null if invalid.
 function cleanMobile(raw) {
@@ -24,7 +25,7 @@ export default async function handler(req, res) {
         FROM signups ORDER BY created_at DESC LIMIT 500`
       return res.status(200).json({ ok: true, count: rows.length, signups: rows })
     } catch (e) {
-      return res.status(500).json({ ok: false, error: e.message })
+      return res.status(500).json({ ok: false, error: apiError(e) })
     }
   }
 
@@ -49,6 +50,6 @@ export default async function handler(req, res) {
   } catch (e) {
     // 23505 = unique violation (duplicate mobile)
     if (e.code === '23505') return res.status(200).json({ ok: true, duplicate: true })
-    return res.status(500).json({ ok: false, error: e.message })
+    return res.status(500).json({ ok: false, error: apiError(e) })
   }
 }

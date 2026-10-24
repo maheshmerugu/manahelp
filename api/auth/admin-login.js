@@ -8,6 +8,7 @@ import {
   isAdmin,
   matchesAdminKey,
   ensureAdminRole,
+  apiError,
 } from '../../lib/auth.js'
 
 // Admin sign-in with two ways in: the admin account password, or the ADMIN_KEY secret.
@@ -43,6 +44,6 @@ export default async function handler(req, res) {
     const user = await ensureAdminRole(found)
     return res.status(200).json({ ok: true, token: signToken(user), user: publicUser(user) })
   } catch (e) {
-    return res.status(500).json({ ok: false, error: e.message })
+    return res.status(500).json({ ok: false, error: apiError(e) })
   }
 }

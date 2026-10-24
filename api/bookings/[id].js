@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres'
-import { getUserFromReq, notify } from '../../lib/auth.js'
+import { getUserFromReq, notify, apiError } from '../../lib/auth.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'PATCH') {
@@ -81,6 +81,6 @@ export default async function handler(req, res) {
 
     return res.status(400).json({ ok: false, error: 'Unknown action.' })
   } catch (e) {
-    return res.status(500).json({ ok: false, error: e.message })
+    return res.status(500).json({ ok: false, error: apiError(e) })
   }
 }
